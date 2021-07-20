@@ -1,6 +1,5 @@
 package duong.dev.dto;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -16,9 +15,10 @@ import lombok.Setter;
 public class ChangePassWordDTO {
 	@NotNull
 	private String pwold;
+	
 	@NotNull
 	private String pwnew;
+	
 	@NotNull
-	@Email
-	private String email;
+	private Integer id;
 }

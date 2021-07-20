@@ -1,13 +1,11 @@
 package duong.dev.api;
 
-import java.io.Console;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.ServletException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,12 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import duong.dev.dto.ChangePassWordDTO;
+import duong.dev.dto.LoginDTO;
 import duong.dev.dto.UserDTO;
-import duong.dev.dto.test;
 import duong.dev.entity.User;
 import duong.dev.logic.UseLogic;
-import duong.dev.mapper.UserMapper;
-import duong.dev.repo.UserRepository;
 import duong.dev.service.ParamService;
 import duong.dev.service.SendMail;
 
@@ -32,28 +28,17 @@ import duong.dev.service.SendMail;
 @RestController
 @RequestMapping("api")
 public class UserApi {
-	@Autowired private UserRepository userRepo;
-	@Autowired private UserMapper usermaper;
 	@Autowired private SendMail sendMail;
 	@Autowired private UseLogic userLogic;
 	@Autowired private ParamService service;
 	
-	@GetMapping("/user")
-	public List<UserDTO> show(){
-		List<User> listUser = userRepo.findAll();
-		List<UserDTO> model = new ArrayList<UserDTO>();
-		for( int i = 0 ; i<listUser.size(); i++) {
-			model.add(usermaper.convertToDTO(listUser.get(i)));
-		}
-		return model;
+	@PostMapping("/v1/user/login")
+	public LoginDTO login(@RequestBody UserDTO userDTO) throws Exception {
+		return userLogic.loginJwt(userDTO.getUsername(), userDTO.getPassword());
 	}
 	
-	@PostMapping("/login")
-	public UserDTO login(@RequestBody UserDTO userDTO) {
-		return userLogic.login(userDTO);
-	}
-	
-	@PostMapping("/photo")
+
+	@PostMapping("/v1/user/photo")
 	public int postPhoto(@RequestParam MultipartFile photo) {
 		//1: không có ảnh, 2 lỗi upfile, 
 		
@@ -67,12 +52,12 @@ public class UserApi {
 		return 0;
 	}
 	
-	@GetMapping("/logout")
+	@GetMapping("/v1/user/logout")
 	public void logOut() {
 		userLogic.logout();
 	}
 	
-	@PostMapping("/sendmail")
+	@PostMapping("/v1/user/sendmail")
 	public boolean sendMailWellCome(@RequestBody UserDTO userDTO) {
 		try {
 			sendMail.senMaiChaoMung(userDTO.getEmail(), userDTO.getPassword());
@@ -83,13 +68,18 @@ public class UserApi {
 		
 	}
 	
-	@PostMapping("/forgetpwsenmail")
+	@GetMapping("/test")
+	public UserDTO hihe()  throws ServletException, IOException {
+		return userLogic.convertTokenToUser();
+	}
+	
+	@PostMapping("/v1/user/forgetpwsenmail")
 	public boolean forGetPwSenMail(@RequestBody UserDTO userEmail) {
 		userLogic.senMailPwNew(userEmail.getEmail());
 		return true;
 	}
 	
-	@PostMapping("/forgetpw")
+	@PostMapping("/v1/user/forgetpw")
 	public boolean forGetPw(@RequestBody UserDTO userDTO) {
 		if(!userLogic.checkEmail(userDTO.getEmail())) return false;
 		if(!userLogic.ụpdatePassword(userDTO.getEmail())) {
@@ -98,18 +88,17 @@ public class UserApi {
 		return true;
 	}
 	
-	@PostMapping("/user")
+	@PostMapping("/v1/user/store")
 	public int add(@RequestBody UserDTO userDTO) {
 		return userLogic.addUser(userDTO);
 	}
 	
-	@PutMapping("/user")
-	public boolean updateUser(@RequestBody UserDTO userDTO) {
-		if(userLogic.updateUser(userDTO)) return false;
-		return true;
+	@PutMapping("/v2/user/update")
+	public boolean updateUser(@RequestBody UserDTO userDTO) throws Exception {
+		return userLogic.updateUser(userDTO);
 	}
 	
-	@PostMapping("/changepw")
+	@PostMapping("/v2/user/changepw")
 	public int changPassWord(@RequestBody ChangePassWordDTO changePw) {
 		return userLogic.changePassWord(changePw);
 	}

@@ -39,4 +39,7 @@ public class UserDTO {
 	
 	@NotNull(message = "thiếu pw")
 	private String password;
+	
+	@NotNull
+	private String fullname;
 }

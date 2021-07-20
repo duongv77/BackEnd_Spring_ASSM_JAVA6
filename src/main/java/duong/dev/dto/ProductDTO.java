@@ -3,6 +3,7 @@ package duong.dev.dto;
 import javax.validation.constraints.NotNull;
 
 import duong.dev.entity.Productype;
+import duong.dev.entity.Promotion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,12 @@ public class ProductDTO {
 	//@NotNull
 	private String image;
 	
+	private String description;
+	
 	@NotNull(message="Thiếu id productype")
-	private Productype productype;
+	private ProductypeDTO productype;
+	
+	private PromotiondetailDTO promotiondetail;
+	
+	
 }

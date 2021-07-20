@@ -1,7 +1,5 @@
 package duong.dev.dto;
 
-import javax.validation.constraints.NotNull;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,12 +9,18 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductypeDTO {
-	//@NotNull
+public class LoginDTO {
 	private Integer id;
 	
-	@NotNull
-	private String name;
+	private String email;
 	
-	private String logo;
+	private String photo;
+	
+	private String accesstoken;
+	
+	private String username;
+	
+	private Integer activated;
+	
+	private String fullname;
 }

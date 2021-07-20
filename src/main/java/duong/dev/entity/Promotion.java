@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,14 +19,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Component
-@Table(name = "products")
-public class Product {
+@Table(name = "promotions")
+public class Promotion {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -36,36 +35,22 @@ public class Product {
 	@Column(name = "name")
 	private String name;
 	
-	@Column(name = "price")
-	private Integer price;
-	
-	@Column(name = "create_date")
-	private String createdate;
-	
-	@Column(name = "available")
-	private Integer available;
-	
-	@Column(name = "description")
-	private String description;
-	
-	@Column(name = "image")
-	private String image;
-	
-	@OneToMany(mappedBy = "product")
-	private List<Orderdetail> orderdetal;
-	
-	@ManyToOne
+	@Column(name = "sale")
+	private Integer sale;
+
+	@OneToMany
 	@JoinColumn(
-			name = "productype_id",
+			name = "product_id",
+			nullable = false,
+			referencedColumnName = "id"
+		)
+	private List<Product> product;
+	
+	@OneToMany
+	@JoinColumn(
+			name = "promotiondetail_id",
 			nullable = false,
 			referencedColumnName = "id"
 	)
-	private Productype productype;
-	
-	@OneToOne(mappedBy = "product")
-	private Cartdetail cartdetail;
-	
-	
-	@OneToOne(mappedBy = "product")
-	private Promotiondetail promotiondetail;
+	private List<Promotiondetail> promotiondetail;
 }

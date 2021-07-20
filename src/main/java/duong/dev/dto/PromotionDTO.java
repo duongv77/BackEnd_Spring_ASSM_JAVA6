@@ -2,6 +2,7 @@ package duong.dev.dto;
 
 import javax.validation.constraints.NotNull;
 
+import duong.dev.entity.Productype;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,12 +12,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductypeDTO {
-	//@NotNull
+public class PromotionDTO {
 	private Integer id;
 	
-	@NotNull
 	private String name;
 	
-	private String logo;
+	@NotNull
+	private Integer sale;
 }
