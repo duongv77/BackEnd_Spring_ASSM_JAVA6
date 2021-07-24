@@ -67,7 +67,6 @@ public class JwtTokenUtil implements Serializable{
     //thực hiện validate token
     public Boolean validateToken(String token, UserDetails userDetails) throws ServletException, IOException {
         final UserDTO user = getUserToToken();
-        System.out.println(user.getUsername().equals(userDetails.getUsername()));
         return (user.getUsername().equals(userDetails.getUsername()) &&  !isTokenExpired(token));
     }
     
@@ -105,11 +104,10 @@ public class JwtTokenUtil implements Serializable{
         return doGenerateToken(claims, userDetails.getUsername());
     }
     
-    //convert string token  về obj
+    //convert token  về obj
     public UserDTO getUserToToken() throws ServletException, IOException {
     	final String requestTokenHeader = request.getHeader("Authorization");
     	String jwtToken = requestTokenHeader.substring(7);
-    	System.out.println("đây là chuỗi jwt từ header: " +jwtToken);
     	
     	Claims clams = Jwts.parser().setSigningKey(secret).parseClaimsJws(jwtToken).getBody();
     	

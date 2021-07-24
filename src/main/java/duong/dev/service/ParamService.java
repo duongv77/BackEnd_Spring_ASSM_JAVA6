@@ -71,4 +71,9 @@ public class ParamService {
 		 return savedFile;
 	}
 	
+	public String time() {
+		String time = java.time.LocalDateTime.now()+"";
+		return time;
+	}
+	
 }

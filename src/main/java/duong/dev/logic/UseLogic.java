@@ -18,6 +18,7 @@ import duong.dev.dto.ChangePassWordDTO;
 import duong.dev.dto.JwtRequest;
 import duong.dev.dto.JwtResponse;
 import duong.dev.dto.LoginDTO;
+import duong.dev.dto.ProductDTO;
 import duong.dev.dto.UserDTO;
 import duong.dev.entity.Cart;
 import duong.dev.entity.User;
@@ -282,6 +283,24 @@ public class UseLogic {
 	public UserDTO convertTokenToUser()  throws ServletException, IOException  {
 		return jwtTokenUtil.getUserToToken();
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

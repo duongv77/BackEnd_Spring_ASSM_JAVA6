@@ -24,7 +24,7 @@ public class ProductAPI {
 	
 	@GetMapping("/v1/product")
 	private List<ProductDTO> showAll() {
-		return productLogic.showAll();
+		return productLogic.showLimit();
 	}
 	
 	@GetMapping("/v1/product/hangsx/{id}")
@@ -44,6 +44,11 @@ public class ProductAPI {
 	@GetMapping("/v1/product/{id}")
 	public ProductDTO showProduct(@PathVariable("id") Product entity)throws IOException{
 		return proMapper.convertToDTO(entity);
+	}
+	
+	@GetMapping("/v1/product/seach:{key}")
+	public List<ProductDTO> seachProduct( @PathVariable("key") String key )throws IOException{
+		return productLogic.seachProduct(key);
 	}
 	
 }

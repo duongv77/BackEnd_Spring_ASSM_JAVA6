@@ -15,15 +15,27 @@ public interface ProductRepository extends JpaRepository<Product, Integer>{
 	@Query("SELECT entity FROM Product entity WHERE productype.id = :id")
 	List<Product> finByIdHangsx(@Param("id") Integer id);
 	
-	@Query("SELECT entity FROM Product entity")
+	@Query("SELECT entity FROM Product entity WHERE id = :id")
+	Product finById(@Param("id") Integer id);
+	
+	@Query("SELECT entity FROM Product entity WHERE available=1")
+	List<Product> finPrUser();
+	
+	@Query("SELECT entity FROM Product entity WHERE available=1")
 	List<Product> finLimit(Pageable pageable);
 	
-	@Query("SELECT entity FROM Product entity ORDER BY entity.price DESC")
+	@Query("SELECT entity FROM Product entity WHERE available=1 ORDER BY entity.price DESC")
 	List<Product> finLimitPriceDESC(Pageable pageable);
 	
-	@Query("SELECT entity FROM Product entity ORDER BY entity.price ASC")
+	@Query("SELECT entity FROM Product entity WHERE available=1 ORDER BY entity.price ASC")
 	List<Product> finLimitPriceASC(Pageable pageable);
 	
-	@Query("SELECT entity FROM Product entity ORDER BY entity.name ASC")
+	@Query("SELECT entity FROM Product entity WHERE available=1 ORDER BY entity.name ASC")
 	List<Product> finLimitNameASC(Pageable pageable);
+	
+	@Query("SELECT entity FROM Product entity WHERE entity.cartdetail.cart.id = :id")
+	List<Product> finByIdCard(@Param("id") Integer id);
+	
+	@Query("SELECT entity FROM Product entity WHERE entity.name LIKE %:keyword% ")
+	List<Product> finByKeyword(@Param("keyword") String keyword);
 }
