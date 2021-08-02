@@ -1,4 +1,4 @@
-package duong.dev.api;
+package duong.dev.controller.user;
 
 
 import org.springframework.web.bind.annotation.CrossOrigin;

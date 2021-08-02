@@ -59,7 +59,7 @@ public class JwtTokenUtil implements Serializable{
     }
     
   //kiểm tra hạn của token
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }

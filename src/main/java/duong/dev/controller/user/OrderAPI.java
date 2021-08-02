@@ -1,4 +1,4 @@
-package duong.dev.api;
+package duong.dev.controller.user;
 
 import java.io.IOException;
 

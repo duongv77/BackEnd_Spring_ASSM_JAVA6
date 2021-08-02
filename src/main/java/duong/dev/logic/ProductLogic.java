@@ -17,11 +17,13 @@ import duong.dev.dto.ProductDTO;
 import duong.dev.entity.Product;
 import duong.dev.mapper.ProductMapper;
 import duong.dev.repo.ProductRepository;
+import duong.dev.service.ParamService;
 
 @Service
 public class ProductLogic {
 	@Autowired private ProductMapper proMapper;
 	@Autowired private ProductRepository proRepo;
+	@Autowired private ParamService prSV;
 	
 	public List<ProductDTO> showLimit() {
 		List<Product> listProduct =proRepo.finPrUser();
@@ -92,6 +94,39 @@ public class ProductLogic {
 	}
 	public void deleteProduct(ProductDTO productD)throws IOException {
 		proRepo.delete(proMapper.convertToEntity(productD));
+	}
+	
+	public ProductDTO updateProduct(ProductDTO productD) {
+		Product productE = proMapper.convertToEntity(productD);
+		proRepo.save(productE);
+		productD.setId(productE.getId());
+		return productD;
+	}
+	
+	public ProductDTO createProduct(ProductDTO productD) throws IOException {
+		productD.setCreatedate(prSV.time());
+		Product productE = proMapper.convertToEntity(productD);
+		proRepo.save(productE);
+		productD.setId(productE.getId());
+		return productD;
+	}
+	
+	public List<ProductDTO> showListProductPromotion(Integer id) throws IOException {
+		List<Product> proE = proRepo.finByIdPromotion(id);
+		List<ProductDTO> productD = new ArrayList<ProductDTO>();
+		for(int i = 0 ; i<proE.size() ; i++) {
+			productD.add(proMapper.convertToDTO(proE.get(i)));
+		}
+		return productD;
+	}
+	public List<ProductDTO> showListProductNotPromotion() throws IOException {
+		System.out.println("nooooooooooooooo");
+		List<Product> proE = proRepo.finByIdPromotionNot();
+		List<ProductDTO> productD = new ArrayList<ProductDTO>();
+		for(int i = 0 ; i<proE.size() ; i++) {
+			productD.add(proMapper.convertToDTO(proE.get(i)));
+		}
+		return productD;
 	}
 }
 

@@ -37,20 +37,13 @@ public class Promotion {
 	
 	@Column(name = "sale")
 	private Integer sale;
-
-	@OneToMany
-	@JoinColumn(
-			name = "product_id",
-			nullable = false,
-			referencedColumnName = "id"
-		)
-	private List<Product> product;
 	
-	@OneToMany
-	@JoinColumn(
-			name = "promotiondetail_id",
-			nullable = false,
-			referencedColumnName = "id"
-	)
+	@Column(name = "create_date")
+	private String createdate;
+	
+	@Column(name = "description")
+	private String description;
+
+	@OneToMany(mappedBy = "promotion")
 	private List<Promotiondetail> promotiondetail;
 }
