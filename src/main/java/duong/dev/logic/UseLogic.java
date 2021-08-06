@@ -151,6 +151,7 @@ public class UseLogic {
 		userLogin.setPhoto(entity.getPhoto());
 		userLogin.setActivated(entity.getActivated());
 		userLogin.setFullname(entity.getFullname());
+		userLogin.setAdmin(entity.getAdmin());
         
         return userLogin;
 	}

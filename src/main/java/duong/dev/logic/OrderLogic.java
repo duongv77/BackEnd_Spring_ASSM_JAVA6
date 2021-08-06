@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import duong.dev.JwtTokenUtil;
+import duong.dev.dto.DoanhThuDTO;
 import duong.dev.entity.Order;
 import duong.dev.entity.User;
 import duong.dev.mapper.UserMapper;
@@ -28,7 +29,25 @@ public class OrderLogic {
 		orderE.setCreateDate(paramSV.time());
 		orderE.setAddress(address);
 		orderE.setUser(user);
+		orderE.setTotal(0);
 		orderRepo.save(orderE);
 		return orderE.getId();
+	}
+	
+	public DoanhThuDTO doanhThu() {
+		DoanhThuDTO dtD = new DoanhThuDTO();
+		dtD.setThang1(orderRepo.doanhThuThang(1));
+		dtD.setThang2(orderRepo.doanhThuThang(2));
+		dtD.setThang3(orderRepo.doanhThuThang(3));
+		dtD.setThang4(orderRepo.doanhThuThang(4));
+		dtD.setThang5(orderRepo.doanhThuThang(5));
+		dtD.setThang6(orderRepo.doanhThuThang(6));
+		dtD.setThang7(orderRepo.doanhThuThang(7));
+		dtD.setThang8(orderRepo.doanhThuThang(8));
+		dtD.setThang9(orderRepo.doanhThuThang(9));
+		dtD.setThang10(orderRepo.doanhThuThang(10));
+		dtD.setThang11(orderRepo.doanhThuThang(11));
+		dtD.setThang12(orderRepo.doanhThuThang(12));
+		return dtD;
 	}
 }

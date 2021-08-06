@@ -24,7 +24,7 @@ public class JwtApi {
 	
 	
 	@GetMapping("/v2/admin/jwt")
-	public Boolean checkJwt(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+	public Boolean checkJwt(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 		final String requestTokenHeader = request.getHeader("Authorization");
 		String jwtToken = requestTokenHeader.substring(7);

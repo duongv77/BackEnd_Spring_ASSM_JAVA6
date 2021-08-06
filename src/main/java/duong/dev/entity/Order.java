@@ -39,6 +39,9 @@ public class Order {
 	@Column(name = "address")
 	private String address;
 	
+	@Column(name = "total")
+	private Integer total;
+	
 	@OneToOne
 	@JoinColumn(
 			name="user_id",

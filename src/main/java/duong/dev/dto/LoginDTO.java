@@ -22,5 +22,7 @@ public class LoginDTO {
 	
 	private Integer activated;
 	
+	private Integer admin;
+	
 	private String fullname;
 }

@@ -12,4 +12,6 @@ public interface CartRepository extends JpaRepository<Cart, Integer>{
 	@Query("SELECT entity FROM Cart entity WHERE entity.user.id =:id")
 	public Cart finByIdUser(@Param("id") Integer id);
 	
+	
+	
 }

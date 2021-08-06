@@ -11,4 +11,9 @@ import duong.dev.entity.Order;
 public interface OrderRepository extends JpaRepository<Order, Integer>{
 	@Query("SELECT entity FROM Order entity WHERE id = :id")
 	public Order finByIdOrder(@Param("id") Integer id);
+	
+	@Query("SELECT sum(e.total) FROM Order e WHERE MONTH(e.createDate) = :month and YEAR(e.createDate) = 2021")
+	public Integer doanhThuThang(@Param("month") Integer month);
+	
+//	@Param("month") Integer month
 }

@@ -20,13 +20,13 @@ public class OrderDetailLogic {
 	@Autowired private OrderRepository orderRepo;
 	@Autowired private OrderDetailRepository orderdetailRepo;
 	@Autowired  private CartdetailLogic cartdetailLogic;
-	
 	public void createOrderDetail(List<OrderdetailDTO> listOrderDetailDTO, Integer id) throws ServletException,IOException {
 		Order order = orderRepo.finByIdOrder(id);
 		int sale=0;
+		int total=0;
 		for(int i=0; i<listOrderDetailDTO.size();i++) {
+			
 			Orderdetail orderDetailE = new Orderdetail();
-			System.out.println(listOrderDetailDTO);
 			orderDetailE.setQuantity(listOrderDetailDTO.get(i).getQuantity());
 			orderDetailE.setProduct(listOrderDetailDTO.get(i).getProduct());
 			orderDetailE.setOrder(order);
@@ -36,9 +36,11 @@ public class OrderDetailLogic {
 			int price = listOrderDetailDTO.get(i).getProduct()
 							.getPrice()*orderDetailE.getQuantity()/100*sale;
 			orderDetailE.setPrice(price);
+			total += orderDetailE.getPrice();
 			orderDetailRepo.save(orderDetailE);
-			System.out.println("Vòng thứ: " +i);
 		}
+		order.setTotal(total);
+		orderRepo.save(order);
 		cartdetailLogic.deleteListCartDetail();
 	}
 	

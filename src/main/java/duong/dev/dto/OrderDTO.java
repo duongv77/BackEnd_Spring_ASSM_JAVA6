@@ -1,6 +1,5 @@
 package duong.dev.dto;
 
-import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
@@ -26,4 +25,6 @@ public class OrderDTO {
 	
 	//@NotNull(message = "User id không thể trống")
 	private User user;
+	
+	private Integer total;
 }
