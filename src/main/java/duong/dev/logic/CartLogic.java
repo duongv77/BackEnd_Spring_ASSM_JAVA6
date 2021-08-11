@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import duong.dev.JwtTokenUtil;
 import duong.dev.dto.CartDetailDTO;
-import duong.dev.dto.ProductDTO;
 import duong.dev.dto.UserDTO;
 import duong.dev.entity.Cart;
 import duong.dev.entity.Cartdetail;
@@ -21,7 +20,6 @@ import duong.dev.mapper.CartDetailMapper;
 import duong.dev.repo.CartDetailRepository;
 import duong.dev.repo.CartRepository;
 import duong.dev.repo.ProductRepository;
-import duong.dev.repo.UserRepository;
 import duong.dev.service.ParamService;
 
 
@@ -34,6 +32,12 @@ public class CartLogic {
 	@Autowired private CartDetailMapper cartdetailMapper;
 	@Autowired private ParamService paramSv;
 	@Autowired private ProductRepository proRepo; 
+	
+	public void createCart(User user) {
+		Cart cartE = new Cart();
+		cartE.setUser(user);
+		cartRepo.save(cartE);
+	}
 	
 	public List<CartDetailDTO> listProductCard()  throws ServletException, IOException {
 		UserDTO userDTO = jwtTokenUtil.getUserToToken();

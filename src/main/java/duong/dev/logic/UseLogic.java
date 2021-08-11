@@ -1,24 +1,16 @@
 package duong.dev.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.server.Session;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
-import com.google.gson.Gson;
 
 import duong.dev.JwtTokenUtil;
 import duong.dev.dto.ChangePassWordDTO;
-import duong.dev.dto.JwtRequest;
-import duong.dev.dto.JwtResponse;
 import duong.dev.dto.LoginDTO;
-import duong.dev.dto.ProductDTO;
 import duong.dev.dto.UserDTO;
 import duong.dev.entity.Cart;
 import duong.dev.entity.User;
@@ -26,12 +18,8 @@ import duong.dev.libs.HashUtil;
 import duong.dev.mapper.UserMapper;
 import duong.dev.repo.CartRepository;
 import duong.dev.repo.UserRepository;
-import duong.dev.service.CookieService;
 import duong.dev.service.ParamService;
 import duong.dev.service.SendMail;
-import duong.dev.service.SessionService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import duong.dev.service.JwtUserDetailsService;
 
 import java.io.IOException;
@@ -42,7 +30,6 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Service
@@ -60,7 +47,10 @@ public class UseLogic {
 	@Autowired private JwtUserDetailsService userDetailsService;
 	@Autowired private JwtTokenUtil jwtTokenUtil;
 	@Autowired private CartRepository cartRepo;
-	
+	@Autowired private UserMapper userMapper;
+	@Autowired private RoleLogic roleLogic;
+	@Autowired private UserRoleLogic userRoleLogic;
+	@Autowired private CartLogic cartlogic;
 	
 	
 
@@ -73,6 +63,15 @@ public class UseLogic {
 	private static Random generator = new Random();
 	
 	private String pwRoanDomPrivate = null;
+	
+	public List<UserDTO> showAll() {
+		List<UserDTO> listUserD = new ArrayList<UserDTO>();
+		List<User> listUserE = userRepo.findAll();
+		for (User user : listUserE) {
+			listUserD.add(userMapper.convertToDTO(user));
+		}
+		return listUserD;
+	}
 
 	public String randomPassword() {
 		List<String> result = new ArrayList<>();
@@ -137,22 +136,21 @@ public class UseLogic {
 	
 	public LoginDTO loginJwt(String username, String password) throws Exception {
 		authenticate(username, password);
-		final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(username);
+		final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 		
-		User entity = userRepo.findByUsername(username);
+		UserDTO userD = userMapper.convertToDTO(userRepo.findByUsername(username));
 		LoginDTO userLogin = new LoginDTO();
 		
 		final String token = jwtTokenUtil.generateToken(userDetails);
 		
 		userLogin.setAccesstoken(token);
-		userLogin.setEmail(entity.getEmail());
-		userLogin.setId(entity.getId());
-		userLogin.setPhoto(entity.getPhoto());
-		userLogin.setActivated(entity.getActivated());
-		userLogin.setFullname(entity.getFullname());
-		userLogin.setAdmin(entity.getAdmin());
-        
+		userLogin.setEmail(userD.getEmail());
+		userLogin.setId(userD.getId());
+		userLogin.setPhoto(userD.getPhoto());
+		userLogin.setActivated(userD.getActivated());
+		userLogin.setFullname(userD.getFullname());
+		userLogin.setAdmin(userD.getAdmin());
+		userLogin.setUserole(userD.getUserole());
         return userLogin;
 	}
 	
@@ -210,6 +208,7 @@ public class UseLogic {
 		if (entity == null) return false;
 		return true;
 	}
+	
 	public int addUser(UserDTO userDTO) {
 //		return 1 : Email đã được đăng kí
 //		return 2 : Lỗi thêm vào DB		
@@ -222,6 +221,7 @@ public class UseLogic {
 		entity.setPassword(HashUtil.hash(userDTO.getPassword()));
 		try {
 			userRepo.save(entity);
+			
 			Cart cartEntity = new Cart();
 			cartEntity.setUser(entity);
 			cartRepo.save(cartEntity);
@@ -233,6 +233,29 @@ public class UseLogic {
 		return 0;
 	}
 	
+	public String createListUser(List<UserDTO> listUser) throws IOException {
+		
+		//kiểm tra username và email đăng kí đã tồn tại hay chưa
+		for (UserDTO userDTO : listUser) {
+			if(checkUsername(userDTO.getUsername())) return "User "+ userDTO.getUsername()+" đã tồn tại! " ;
+			if(checkMail(userDTO.getEmail())) return "Emai "+ userDTO.getEmail() +" đã tồn tại ! " ;
+		}
+		
+		//thêm vào DB
+		for (UserDTO userDTO : listUser) {
+			userDTO.setPassword(HashUtil.hash(userDTO.getPassword()));
+			User userE = usermaper.convertToEntity(userDTO);
+			userRepo.save(userE);
+			
+			//thêm quyền user
+			userRoleLogic.createUserRole(userE, roleLogic.getRoleByID(2));
+			
+			//tạo giỏ hàng liên kết với user
+			cartlogic.createCart(userE);
+		}
+		return "success";
+	}
+	
 	public boolean updateUser(UserDTO userDTO) {
 //		public String getUsernameFromToken(String token) {
 //	        return jwtTokenUtil.getClaimFromToken(token, Claims::getSubject);
@@ -242,8 +265,6 @@ public class UseLogic {
 		entity.setFullname(userDTO.getFullname());
 		entity.setEmail(userDTO.getEmail());
 		entity.setPhoto(userDTO.getPhoto());
-		
-		System.out.println();
 		try {
 			userRepo.save(entity);
 		} catch (Exception e) {
@@ -281,6 +302,16 @@ public class UseLogic {
 		return 0;
 	}
 	
+	//thay đổi trạng thái hoạt động
+	public UserDTO updateActivated(User user, Integer value) {
+		user.setActivated(value);
+		userRepo.save(user);
+		
+		return usermaper.convertToDTO(user);
+	}
+	
+	
+	//lấy user từ accessToken
 	public UserDTO convertTokenToUser()  throws ServletException, IOException  {
 		return jwtTokenUtil.getUserToToken();
 	}

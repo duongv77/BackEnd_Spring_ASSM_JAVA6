@@ -1,12 +1,10 @@
 package duong.dev.controller.user;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import duong.dev.dto.ChangePassWordDTO;
 import duong.dev.dto.LoginDTO;
-import duong.dev.dto.ProductDTO;
 import duong.dev.dto.UserDTO;
-import duong.dev.entity.User;
 import duong.dev.logic.UseLogic;
 import duong.dev.service.ParamService;
 import duong.dev.service.SendMail;
@@ -34,7 +30,7 @@ public class UserApi {
 	@Autowired private UseLogic userLogic;
 	@Autowired private ParamService service;
 	
-	@PostMapping("/v1/user/login")
+	@PostMapping("/v1/login")
 	public LoginDTO login(@RequestBody UserDTO userDTO) throws Exception {
 		return userLogic.loginJwt(userDTO.getUsername(), userDTO.getPassword());
 	}

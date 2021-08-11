@@ -1,5 +1,7 @@
 package duong.dev.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,4 +27,6 @@ public class LoginDTO {
 	private Integer admin;
 	
 	private String fullname;
+	
+	private List<UserRoleDTO> userole;
 }

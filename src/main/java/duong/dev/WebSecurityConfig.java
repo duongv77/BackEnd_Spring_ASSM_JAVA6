@@ -17,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import duong.dev.service.JwtUserDetailsService;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -24,35 +26,36 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	
-	@Autowired private UserDetailsService jwtUserDetailsService;
+	@Autowired private JwtUserDetailsService jwtUserDetailsService;
 	@Autowired
     private JwtRequestFilter jwtRequestFilter;
 	
 	@Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        // configure AuthenticationManager so that it knows from where to load
-        // user for matching credentials
-        // Use BCryptPasswordEncoder
-        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(jwtUserDetailsService);
     }
 	
 	@Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-	
+	 
 	@Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+	
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         // We don't need CSRF for this example
-        httpSecurity.csrf().disable().cors().disable()
+        httpSecurity.csrf().disable().cors().disable();
                 // dont authenticate this particular request
-                .authorizeRequests().antMatchers("/api/v1/**" ).permitAll().
+        httpSecurity.authorizeRequests()
+                .antMatchers("/api/v2/user/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/api/v2/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/v1/**" ).permitAll().
                 // all other requests need to be authenticated
                         anyRequest().authenticated().and().
                 // make sure we use stateless session; session won't be used to

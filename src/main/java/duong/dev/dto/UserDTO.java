@@ -1,10 +1,10 @@
 package duong.dev.dto;
 
+import java.util.List;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,4 +42,6 @@ public class UserDTO {
 	
 	@NotNull
 	private String fullname;
+	
+	private List<UserRoleDTO> userole;
 }

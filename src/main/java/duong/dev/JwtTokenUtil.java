@@ -85,6 +85,7 @@ public class JwtTokenUtil implements Serializable{
     	userToken.setAdmin(userEntity.getAdmin());
     	userToken.setActivated(userEntity.getActivated());
     	userToken.setPassword(userEntity.getPassword());
+    	//userToken.setUserole(userEntity.getUserole());
     	
     	Gson gson = new Gson();
     	String userStr = gson.toJson(userToken);
@@ -92,7 +93,6 @@ public class JwtTokenUtil implements Serializable{
         return Jwts.builder()
         		.setClaims(claims)
         		.setSubject(userStr)
-        		
         		.setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
